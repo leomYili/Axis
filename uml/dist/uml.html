@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>AxisLine</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <!-- boostrap css -->
+    <link href="../plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../plugins/bootstrap/css/sdm.css" rel="stylesheet">
+    <!-- doc css -->
+    <link href="css/doc.css" rel="stylesheet">
+    <link href="css/widget.css" rel="stylesheet">
+    <link href="css/lattice.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="lib/jquery-3.1.1.min.js"></script>
+    <script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
+    <!-- drop 之后得换掉 -->
+    <script src="lib/jquery-ui.min.js"></script>
+    <!-- underscore -->
+    <script src="lib/jsPlumb-2.2.8.js"></script>
+    <!-- underscore -->
+    <script src="lib/underscore.js"></script>
+    <script src="lib/xml2json.min.js"></script>
+</head>
+
+<body>
+    <header class="navbar navbar-static-top border_color background_color">
+        <div class="container">
+            <div class="navbar-brand logo">
+                uml
+            </div>
+            <div class="nav navbar-nav navbar-right">
+                <a class="navbar-link header_item"><img src="img/grid_on.png"></a>
+                <a class="navbar-link header_item"><img src="img/undo.png"></a>
+                <a class="navbar-link header_item"><img src="img/redo.png"></a>
+                <a class="navbar-link header_item" data-tool="lineshow"><img src="img/lined.png"></a>
+                <button type="button" class="btn btn-default navbar-btn" id="save">保存</button>
+                <button type="button" class="btn btn-default navbar-btn" id="load">载入</button>
+            </div>
+        </div>
+    </header>
+    <aside class="main-sidebar padding_top-header background_color width_aside">
+        <div class="widget-container scrollable small list" style="display: none;">
+            <div class="heading">
+                Pages
+                <span class="glyphicon glyphicon-plus pull-right"></span>
+            </div>
+            <div class="widget-content">
+                <ul>
+                    <li>
+                        <label>page1</label>
+                    </li>
+                    <li>
+                        <label>page2</label>
+                    </li>
+                    <li>
+                        <label>page3</label>
+                    </li>
+                    <li>
+                        <label>page4</label>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="widget-container scrollable normal">
+            <div class="heading">
+                Page1
+                <span class="glyphicon glyphicon-th-list pull-right"></span>
+            </div>
+            <div class="widget-content">
+                <div class="tree-list" id="tree"></div>
+            </div>
+        </div>
+    </aside>
+    <div class="content-wrapper layout">
+        <div class="layout_container">
+            <div class="artboard uml" tabindex="-1"></div>
+        </div>
+    </div>
+    <!-- modal -->
+    <div class="modal fade bs-example-modal-lg" tabindex="-1" id="entity">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden>x</span>
+                    </button>
+                    <h4 class="modal-title">编辑表单属性</h4>
+                </div>
+                <div class="modal-body table-responsive">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="addProperty">add</button>
+                    <button type="button" class="btn btn-primary" id="updateEntity">Save config</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade bs-example-modal-lg" tabindex="-1" id="structure">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden>x</span>
+                    </button>
+                    <h4 class="modal-title">保存 xml文档</h4>
+                </div>
+                <div class="modal-body nav-tabs-custom" id="tab">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade bs-example-modal-lg" tabindex="-1" id="loadsymbols">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden>x</span>
+                    </button>
+                    <h4 class="modal-title">载入数据</h4>
+                </div>
+                <div class="modal-body">
+                    <textarea class="form-control" rows="18" id="loadmore"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="xmltojson">载入</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- contextmenu -->
+    <div id="artboard_context-menu">
+        <ul class="dropdown-menu context-menu list-group" role="menu">
+            <li class="list-group-item">
+                <span class="menu-type">新建</span>
+                <span class="badge extend">Ctrl+N</span>
+            </li>
+            <li class="divider"></li>
+            <li class="list-group-item">
+                <span class="menu-type">全选</span>
+                <span class="badge extend">Ctrl+A</span>
+            </li>
+            <li class="divider"></li>
+            <li class="list-group-item">
+                <span class="menu-type">创建连线</span>
+                <span class="badge extend">Ctrl+L</span>
+            </li>
+        </ul>
+    </div>
+    <div id="box_context-menu">
+        <ul class="dropdown-menu context-menu list-group" role="menu">
+            <li class="list-group-item">
+                <span class="menu-type">编辑</span>
+                <span class="badge extend">双击</span>
+            </li>
+            <li class="list-group-item">
+                <span class="menu-type">删除</span>
+                <span class="badge extend">Delete/Backspace</span>
+            </li>
+            <li class="divider"></li>
+            <li class="list-group-item">
+                <span class="menu-type">全选</span>
+                <span class="badge extend">Ctrl+A</span>
+            </li>
+            <li class="divider"></li>
+            <li class="list-group-item">
+                <span class="menu-type">创建连线</span>
+                <span class="badge extend">Ctrl+L</span>
+            </li>
+        </ul>
+    </div>
+
+    <!-- require.js -->
+    <script src="lib/require.js"></script>
+    <script src="js/configuration.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>

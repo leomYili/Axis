@@ -1,0 +1,43 @@
+{
+    "tablename":"tb_department",
+    "id":"DEPARTMENT1",
+    "name":"department",
+    "displayname":"部门",
+    "properties": [{
+        "primarykey": "true",
+        "name": "id",
+        "columnname": "id",
+        "type": "INT",
+        "columntype": "INT",
+        "length": 200,
+        "describe": "这是自增序号",
+        "nullable":"false",
+        "foreignkey": "false",
+        "foreignentityid":"",
+        "associatealias":""
+    },{
+        "primarykey": "false",
+        "name": "describe",
+        "columnname": "name",
+        "type": "VARCHAR",
+        "columntype": "VARCHAR",
+        "length": 250,
+        "describe": "部门描述",
+        "nullable":"false",
+        "foreignkey":"false",
+        "foreignentityid":"",
+        "associatealias":""
+    }, {
+        "primarykey": "false",
+        "name": "name",
+        "columnname": "name",
+        "type": "VARCHAR",
+        "columntype": "VARCHAR",
+        "length": 50,
+        "describe": "部门名称",
+        "nullable":"false",
+        "foreignkey":"false",
+        "foreignentityid":"",
+        "associatealias":""
+    }]
+}

@@ -1,0 +1,6 @@
+Axis-flow,Axis-uml
+==============================
+基于jsPlumb开源库实现的流程图和uml类图在线编辑工具,可生成相应的XML文本.
+
+* r.js:是用于require.js中模块的打包工具
+* build.js:打包工具的配置文件

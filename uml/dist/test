@@ -1,0 +1,146 @@
+<mspplus-root>
+    <nodes>
+
+        <node x="45.5" y="29">
+            <id>art_1</id>
+            <level>1</level>
+            <concurrenceid>artboard</concurrenceid>
+
+            <type>start</type>
+
+            <displayname>开始</displayname>
+            <name></name>
+            <zindex>1000</zindex>
+            <propertylist></propertylist>
+        </node>
+
+        <node x="434.5" y="431">
+            <id>art_2</id>
+            <level>1</level>
+            <concurrenceid>artboard</concurrenceid>
+
+            <type>end</type>
+
+            <displayname>结束</displayname>
+            <name></name>
+            <zindex>1001</zindex>
+            <propertylist></propertylist>
+        </node>
+
+        <node x="89.5" y="181">
+            <id>art_3</id>
+            <level>1</level>
+            <concurrenceid>artboard</concurrenceid>
+
+            <type>concurrence</type>
+
+            <displayname>并发体</displayname>
+            <name></name>
+            <zindex>1002</zindex>
+            <propertylist></propertylist>
+        </node>
+
+        <node x="96" y="39">
+            <id>art_4</id>
+            <level>2</level>
+            <concurrenceid>art_3</concurrenceid>
+
+            <type>concurrence</type>
+
+            <displayname>并发体</displayname>
+            <name></name>
+            <zindex>1012</zindex>
+            <propertylist></propertylist>
+        </node>
+
+        <node x="27" y="25">
+            <id>art_5</id>
+            <level>2</level>
+            <concurrenceid>art_3</concurrenceid>
+
+            <type>activity</type>
+
+            <displayname>流程</displayname>
+            <name></name>
+            <zindex>1012</zindex>
+            <propertylist></propertylist>
+        </node>
+
+        <node x="63" y="8">
+            <id>art_6</id>
+            <level>3</level>
+            <concurrenceid>art_4</concurrenceid>
+
+            <type>activity</type>
+
+            <displayname>流程</displayname>
+            <name></name>
+            <zindex>1022</zindex>
+            <propertylist></propertylist>
+        </node>
+
+    </nodes>
+    <lines>
+
+        <line>
+            <from>art_1</from>
+            <to>art_3</to>
+            <displayname></displayname>
+            <labelid></labelid>
+            <conid></conid>
+        </line>
+
+        <line>
+            <from>art_3</from>
+            <to>art_5</to>
+            <displayname></displayname>
+            <labelid></labelid>
+            <conid></conid>
+        </line>
+
+        <line>
+            <from>art_5</from>
+            <to>art_4</to>
+            <displayname></displayname>
+            <labelid></labelid>
+            <conid></conid>
+        </line>
+
+        <line>
+            <from>art_4</from>
+            <to>art_6</to>
+            <displayname></displayname>
+            <labelid></labelid>
+            <conid></conid>
+        </line>
+
+        <line>
+            <from>art_6</from>
+            <to>art_4</to>
+            <displayname></displayname>
+            <labelid></labelid>
+            <conid></conid>
+        </line>
+
+        <line>
+            <from>art_4</from>
+            <to>art_3</to>
+            <displayname></displayname>
+            <labelid></labelid>
+            <conid></conid>
+        </line>
+
+        <line>
+            <from>art_3</from>
+            <to>art_2</to>
+            <displayname></displayname>
+            <labelid></labelid>
+            <conid></conid>
+        </line>
+
+    </lines>
+    <config>
+
+    </config>
+    <form></form>
+</mspplus-root>

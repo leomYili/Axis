@@ -1,0 +1,14 @@
+<% if(shape != "line") { %>
+    <form data-sid="<%=id%>">
+        <div class="form-group">
+            <label>名称</label>
+            <input type="text" class="form-control" name="sign" placeholder="名称" value="<%=sign%>">
+        </div>
+        <div class="form-group">
+            <label>显示名称</label>
+            <input type="text" class="form-control" name="shapeName" placeholder="显示名称" value="<%=shapeName%>">
+        </div>
+    </form>
+<% } else { %>
+    <p>这是连线</p>
+<% } %>

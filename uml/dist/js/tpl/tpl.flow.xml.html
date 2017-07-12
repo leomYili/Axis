@@ -1,0 +1,44 @@
+<mspplus-root>
+    <nodes>
+    <% for(var i=0,len=nodes.length;i < len; i++) { %>
+        <node x="<%=nodes[i].position.left%>" y="<%=nodes[i].position.top%>" width="<%= nodes[i].position.width ? nodes[i].position.width : ''%>" height="<%= nodes[i].position.height ? nodes[i].position.height : ''%>">
+            <id><%=nodes[i].id%></id>
+            <level><%=nodes[i].level%></level>
+            <concurrenceid><%=nodes[i].parentId%></concurrenceid>
+            <% if(nodes[i].shape == "adjust") { %>
+            <type>activity</type>
+            <% } else { %>
+            <type><%=nodes[i].shape%></type>
+            <% } %>
+            <displayname><%=nodes[i].shapeName%></displayname>
+            <name><%=nodes[i].sign%></name>
+            <zindex><%=nodes[i].zIndex%></zindex>
+            <propertylist></propertylist>
+        </node>
+    <% } %>
+    </nodes>
+    <lines>
+    <% for(var j=0,len=lines.length;j < len; j++) { %>
+        <line>
+            <id><%=lines[j].id%></id>
+            <from><%=lines[j].from%></from>
+            <to><%=lines[j].to%></to>
+            <displayname><%=lines[j].displayName%></displayname>
+            <labelid></labelid>
+            <conid><%=lines[j].conid%></conid>
+        </line>
+    <% } %>
+    </lines>
+    <processconfig>
+        <displayname></displayname>
+        <formstate></formstate>
+        <properties>
+            <% for(var w in config) { %>
+                <property>
+                    <name><%=w%></name>
+                    <value><%=config[w]%></value>
+                </property>
+            <% } %>
+        </properties>
+    </processconfig>
+</mspplus-root>

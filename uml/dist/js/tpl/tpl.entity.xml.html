@@ -1,0 +1,30 @@
+<mspplus-root>
+<% for(var i=0,len=entity.length;i < len; i++) { %>
+    <node x="<%=entity[i].position.left%>" y="<%=entity[i].position.top%>">
+        <id><%=entity[i].arr.id%></id>
+        <name><%=entity[i].arr.name%></name>
+        <tablename><%=entity[i].arr.tablename%></tablename>
+        <displayname><%=entity[i].arr.displayname%></displayname>
+        <propertylist>
+        <% for(var j = 0; j < entity[i].arr.properties.length; j++) { var item = entity[i].arr.properties[j]; %>
+            <property>
+                <primarykey><%=item.primarykey%></primarykey>
+                <name><%=item.name%></name>
+                <datatype><%=item.datatype%></datatype>
+                <columnname><%=item.columnname%></columnname>
+                <columntype><%=item.columntype%></columntype>
+                <length><%=item.length%></length>
+                <describe><%=item.describe%></describe>
+                <foreignkey>
+                    <% if(!_.isUndefined(item.foreignkey.associateentity) && item.foreignkey.associateentity != ''){ %>
+                        <associateentity><%=item.foreignkey.associateentity%></associateentity>
+                        <aliasname><%=item.foreignkey.aliasname%></aliasname>
+                        <displayname><%=item.foreignkey.displayname%></displayname>
+                    <% } %>
+                </foreignkey>
+            </property>
+        <% } %>
+        </propertylist>
+  </node>
+<% } %>
+</mspplus-root>

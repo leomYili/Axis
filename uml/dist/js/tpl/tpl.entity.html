@@ -1,0 +1,111 @@
+<table class="table table-striped t-porperty" data-sign="<%=arr.id%>">
+    <thead>
+        <tr>
+            <th name="primarykey">主键</th>
+            <th name="name">名称</th>
+            <th name="type">类型</th>
+            <th name="columnname">列名</th>
+            <th name="columntype">列类型</th>
+            <th name="length">长度</th>
+            <th name="describe">说明</th>
+            <th name="nullable">可为空</th>
+            <th name="foreignkey">外键</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% for(var i = 0, len = arr.properties.length; i < len; i++) {%>
+            <% var item = arr.properties[i]; %>
+                <% if(!_.isEmpty(item.foreignkey)){ %>
+                <tr>
+                    <td>
+                        <input disabled="true" type="radio" class="attribute extend" name="primarykey" value="<%=item.name%>" <%= item.primarykey== "true" || item.primarykey == true  ? 'checked' : ''%>>
+                    </td>
+                    <td>
+                        <input type="text" class="attribute form-control" value="<%=item.name%>">
+                    </td>
+                    <td>
+                        <select class="attribute form-control">
+                            <% for(var j = 0; j < datatype.length; j++ ){ %>
+                                <% if(datatype[j] == item.datatype){ %>
+                                    <option value="<%=datatype[j]%>" selected="true"><%=datatype[j]%></option>
+                                <% } else { %>
+                                    <option value="<%=datatype[j]%>"><%=datatype[j]%></option>
+                                <% } %>
+                            <% } %>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" class="attribute form-control" value="<%=item.columnname%>">
+                    </td>
+                    <td>
+                        <select class="attribute form-control">
+                            <% for(var j = 0; j < datatype.length; j++ ){ %>
+                                <% if(datatype[j] == item.columntype){ %>
+                                    <option value="<%=datatype[j]%>" selected="true"><%=datatype[j]%></option>
+                                <% } else { %>
+                                    <option value="<%=datatype[j]%>"><%=datatype[j]%></option>
+                                <% } %>
+                            <% } %>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" class="attribute form-control" value="<%=item.length%>">
+                    </td>
+                    <td>
+                        <input type="text" class="attribute form-control" value="<%=item.describe%>">
+                    </td>
+                    <td class="nullable"><input type="checkbox" class="extendChecbox" <%= (item.nullable == "true" || item.nullable == true) ? 'checked="true"' : ''%>></td>
+                    <td class="foreignkey yes">
+                        <p class="form-control-static">
+                            <span class="associateentity"><%=item.foreignkey.associateentity%></span>(<span class="displayname"><%=item.foreignkey.displayname%></span>)[<span class="aliasname"><%=item.foreignkey.aliasname%></span>]
+                        </p>
+                    </td>
+                </tr>
+                <% } else { %>
+                <tr>
+                    <td>
+                        <input type="radio" class="attribute extend" name="primarykey" value="<%=item.name%>" <%= item.primarykey== "true" || item.primarykey == true  ? 'checked' : ''%>>
+                    </td>
+                    <td>
+                        <input type="text" class="attribute form-control" value="<%=item.name%>">
+                    </td>
+                    <td>
+                        <select class="attribute form-control">
+                            <% for(var j = 0; j < datatype.length; j++ ){ %>
+                                <% if(datatype[j] == item.datatype){ %>
+                                    <option value="<%=datatype[j]%>" selected="true"><%=datatype[j]%></option>
+                                <% } else { %>
+                                    <option value="<%=datatype[j]%>"><%=datatype[j]%></option>
+                                <% } %>
+                            <% } %>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" class="attribute form-control" value="<%=item.columnname%>">
+                    </td>
+                    <td>
+                        <select class="attribute form-control">
+                            <% for(var j = 0; j < datatype.length; j++ ){ %>
+                                <% if(datatype[j] == item.columntype){ %>
+                                    <option value="<%=datatype[j]%>" selected="true"><%=datatype[j]%></option>
+                                <% } else { %>
+                                    <option value="<%=datatype[j]%>"><%=datatype[j]%></option>
+                                <% } %>
+                            <% } %>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" class="attribute form-control" value="<%=item.length%>">
+                    </td>
+                    <td>
+                        <input type="text" class="attribute form-control" value="<%=item.describe%>">
+                    </td>
+                    <td class="nullable"><input type="checkbox" class="extendChecbox" <%= (item.nullable == "true" || item.nullable == true) ? 'checked="true"' : ''%>></td>
+                    <td class="foreignkey no">
+                        <p class="form-control-static">暂无</p>
+                    </td>
+                </tr>
+                <% } %>
+        <% } %>
+    </tbody>
+</table>

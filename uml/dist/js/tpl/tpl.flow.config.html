@@ -1,0 +1,51 @@
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active">
+        <a href="#tab1" aria-controls="tab1" role="tab" data-toggle="tab">基本配置</a>
+    </li>
+    <li role="presentation">
+        <a href="#tab2" aria-controls="tab2" role="tab" data-toggle="tab">高级配置</a>
+    </li>
+    <li role="presentation">
+        <a href="#tab3" aria-controls="tab3" role="tab" data-toggle="tab">扩展配置</a>
+    </li>
+</ul>
+<form>
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="tab1">
+            <div class="form-group">
+                <label>选择表单</label>
+                <select class="form-control" name="form">
+                    <option>表单1</option>
+                    <option>表单2</option>
+                    <option>表单3</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>选择实体</label>
+                <select class="form-control" name="entity">
+                    <option>teacher</option>
+                    <option>student</option>
+                    <option>classRoom</option>
+                </select>
+            </div>
+            <button class="btn btn-default">设置表单状态</button>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="tab2">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="recall" value="true"> 总是允许撤回
+                </label>
+            </div>
+            <div class="form-group">
+                <label>动态流程名称</label>
+                <input type="text" class="form-control" name="dynamicName" placeholder="动态流程名称">
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane" id="tab3">
+            <div class="form-group">
+                <label>扩展名称</label>
+                <input type="text" class="form-control" name="extendName" placeholder="扩展名称">
+            </div>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,41 @@
+<% if(type == "start"){ %>
+    <div class="symbol_flow">
+        <div class="symbol_flow-item symbol_flow-start">
+            <img class="cursor-crosshair" src="img/flow-start.png">
+        </div>
+        <div class="symbol_shade"></div>
+        <label class="symbol-label">开始</label>
+    </div>
+<% } else if(type == "end") { %>
+    <div class="symbol_flow">
+        <div class="symbol_flow-item symbol_flow-end">
+            <img class="cursor-crosshair" src="img/flow-end.png">
+        </div>
+        <div class="symbol_shade"></div>
+        <label class="symbol-label">结束</label>
+    </div>
+<% } else if(type == "route") { %>
+    <div class="symbol_flow">
+        <div class="symbol_flow-item symbol_flow-route">
+            <img class="cursor-crosshair" src="img/flow-route.png">
+        </div>
+        <div class="symbol_shade"></div>
+        <label class="symbol-label">路由</label>
+    </div>
+<% } else if(type == "concurrence") { %>
+    <div class="symbol_flow symbol_flow-sec">
+        <div class="symbol_flow-item symbol_flow-concurrence">
+            <div class="symbol_pivot-start"></div>
+            <div class="symbol_pivot-end"></div>
+        </div>
+        <label class="symbol-label symbol_concurrence-label">并发体</label>
+    </div>
+<% } else if(type == "adjust") { %>
+    <div class="symbol_flow">
+        <div class="symbol_flow-item symbol_flow-adjust">
+            <img class="cursor-crosshair" src="img/flow-adjust.png">
+        </div>
+        <div class="symbol_shade"></div>
+        <label class="symbol-label">流程</label>
+    </div>
+<% } %>

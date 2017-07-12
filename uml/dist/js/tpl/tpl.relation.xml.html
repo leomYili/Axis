@@ -1,0 +1,10 @@
+<% for(var i=0,len=relation.length;i < len; i++) { %>
+<% var item = relation[i];%>
+    <relation>
+        <item>
+            <name vaild="<%=item.label%>"></name>
+            <source vaild="<%=item.sourceId%>"></source>
+            <target vaild="<%=item.targetId%>"></target>
+        </item>
+    </relation>
+<% } %>

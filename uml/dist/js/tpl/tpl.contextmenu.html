@@ -1,0 +1,14 @@
+<div id="context-menu">
+    <ul class="dropdown-menu" role="menu">
+        <li><a tabindex="-1">剪切</a></li>
+        <li><a tabindex="-1">复制</a></li>
+        <li><a tabindex="-1">粘贴</a></li>
+        <li class="divider"></li>
+        <li><a tabindex="-1">编辑</a></li>
+        <li><a tabindex="-1">删除</a></li>
+        <% if(type != "line"){ %>
+            <li class="divider"></li>
+            <li><a tabindex="-1">创建连线</a></li>
+        <% } %>
+    </ul>
+</div>

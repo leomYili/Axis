@@ -1,0 +1,40 @@
+.lattice{
+  display:block;
+}
+
+.lattice-grid{
+  position: relative;
+  float:left;
+  -webkit-box-sizing:border-box;
+  box-sizing: border-box;
+  width:100%;
+  text-align: center;
+  padding:0;
+  margin:0;
+}
+
+.symbol.lattice-grid{
+  line-height: 3.75rem;
+}
+
+.lattice-cutline{
+  border-top:1px solid #e0e0e0;
+  border-left:1px solid #e0e0e0;
+}
+
+.lattice-cutline .lattice-grid{
+  border-right: 1px solid #e0e0e0;
+  border-bottom:1px solid #e0e0e0;
+}
+
+.lattice.lattice-2x .lattice-grid{
+  width:50%;
+}
+
+.lattice.lattice-3x .lattice-grid{
+  width:33.3333%;
+}
+
+.lattice.lattice-4x .lattice-grid{
+  width:25%;
+}

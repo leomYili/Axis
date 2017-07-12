@@ -1,0 +1,16 @@
+.scroller-box{
+  background:#000;
+  opacity: 0.1;
+  width:8px;
+  top:4px;
+  right:2px;
+  border-radius: 5px;
+}
+.scroller-bar{
+  background:#fff;
+  opacity: 0.8;
+  width:8px;
+  right:2px;
+  top:4px;
+  border-radius: 5px;
+}

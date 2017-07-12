@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>AxisLine</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <!-- boostrap css -->
+    <link href="../plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../plugins/bootstrap/css/sdm.css" rel="stylesheet">
+    <!-- doc css -->
+    <link href="css/doc.css" rel="stylesheet">
+    <link href="css/widget.css" rel="stylesheet">
+    <link href="css/lattice.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="lib/jquery-3.1.1.min.js"></script>
+    <script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
+    <!-- drop 之后得换掉 -->
+    <script src="lib/jquery-ui.min.js"></script>
+    <!-- underscore -->
+    <script src="lib/jsPlumb-2.2.8.js"></script>
+    <!-- underscore -->
+    <script src="lib/underscore.js"></script>
+    <script src="lib/xml2json.min.js"></script>
+</head>
+
+<body>
+    <header class="navbar navbar-static-top border_color background_color">
+        <div class="container">
+            <div class="navbar-brand logo">
+                flowChart
+            </div>
+            <div class="nav navbar-nav navbar-right">
+                <a class="navbar-link header_item"><img src="img/grid_on.png"></a>
+                <a class="navbar-link header_item" id="undo"><img src="img/undo.png"></a>
+                <a class="navbar-link header_item" id="redo"><img src="img/redo.png"></a>
+                <a class="navbar-link header_item" data-tool="lineshow"><img src="img/lined.png"></a>
+                <button type="button" class="btn btn-default navbar-btn" id="config">流程配置</button>
+                <button type="button" class="btn btn-default navbar-btn" id="verify">校验</button>
+                <button type="button" class="btn btn-default navbar-btn" id="save">保存</button>
+                <button type="button" class="btn btn-default navbar-btn" id="load">载入</button>
+            </div>
+        </div>
+    </header>
+    <aside class="main-sidebar padding_top-header background_color width_aside">
+        <div class="widget-container scrollable normal">
+            <div class="heading">
+                flow chart流程图
+            </div>
+            <div class="widget-content">
+                <div class="lattice lattice-4x">
+                    <div class="symbol lattice-grid">
+                        <img class="symbol" data-shape="start" src="img/flow-start.png">
+                        <label class="label label-default">开始</label>
+                    </div>
+                    <div class="symbol lattice-grid">
+                        <img class="symbol" data-shape="end" src="img/flow-end.png">
+                        <label class="label label-default">结束</label>
+                    </div>
+                    <div class="symbol lattice-grid">
+                        <img class="symbol" data-shape="adjust" src="img/flow-adjust.png">
+                        <label class="label label-default">流程</label>
+                    </div>
+                    <div class="symbol lattice-grid">
+                        <img class="symbol" data-shape="route" src="img/flow-route.png">
+                        <label class="label label-default">路由</label>
+                    </div>
+                    <div class="symbol lattice-grid">
+                        <img class="symbol" data-shape="concurrence" src="img/flow-concurrence.png">
+                        <label class="label label-default">并发</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+    <div class="content-wrapper layout">
+        <div class="layout_container">
+            <div class="artboard flow" tabindex="-1">
+            </div>
+        </div>
+    </div>
+    <!-- modal -->
+    <div class="modal fade bs-example-modal-lg" tabindex="-1" id="structure">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden>x</span>
+                    </button>
+                    <h4 class="modal-title">保存 xml文档</h4>
+                </div>
+                <div class="modal-body nav-tabs-custom" id="tab">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade bs-example-modal-lg" tabindex="-1" id="loadsymbols">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden>x</span>
+                    </button>
+                    <h4 class="modal-title">载入数据</h4>
+                </div>
+                <div class="modal-body">
+                    <textarea class="form-control" rows="18" id="loadmore"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="xmltojson">载入</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade bs-example-modal-lg" tabindex="-1" id="flowConfig">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden>x</span>
+                    </button>
+                    <h4 class="modal-title">流程配置</h4>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="updateConfig">Save config</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade bs-example-modal-lg" tabindex="-1" id="flowChart">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden>x</span>
+                    </button>
+                    <h4 class="modal-title">编辑属性</h4>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="updateFlow">Save config</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade bs-example-modal-lg" tabindex="-1" id="flowLine">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden>x</span>
+                    </button>
+                    <h4 class="modal-title">编辑属性</h4>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="updateLine">Save config</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- contextmenu -->
+    <div id="artboard_context-menu">
+        <ul class="dropdown-menu context-menu list-group" role="menu">
+            <li class="list-group-item">
+                <span class="menu-type">新建</span>
+                <span class="badge extend">Ctrl+N</span>
+            </li>
+            <!-- <li class="divider"></li>
+            <li class="list-group-item">
+                <span class="menu-type">粘贴</span>
+                <span class="badge extend">Ctrl+V</span>
+            </li>
+ -->        <li class="divider"></li>
+            <li class="list-group-item">
+                <span class="menu-type">全选</span>
+                <span class="badge extend">Ctrl+A</span>
+            </li>
+            <li class="divider"></li>
+            <li class="list-group-item">
+                <span class="menu-type">创建连线</span>
+                <span class="badge extend">Ctrl+L</span>
+            </li>
+        </ul>
+    </div>
+    <div id="box_context-menu">
+        <ul class="dropdown-menu context-menu list-group" role="menu">
+            <!-- <li class="list-group-item">
+                <span class="menu-type">剪切</span>
+                <span class="badge extend">Ctrl+X</span>
+            </li>
+            <li class="list-group-item">
+                <span class="menu-type">复制</span>
+                <span class="badge extend">Ctrl+C</span>
+            </li>
+            <li class="list-group-item">
+                <span class="menu-type">粘贴</span>
+                <span class="badge extend">Ctrl+V</span>
+            </li>
+            <li class="divider"></li>
+ -->
+            <li class="list-group-item">
+                <span class="menu-type">编辑</span>
+                <span class="badge extend">双击</span>
+            </li>
+            <li class="list-group-item">
+                <span class="menu-type">删除</span>
+                <span class="badge extend">Delete/Backspace</span>
+            </li>
+            <!-- <li class="divider"></li>
+            <li class="list-group-item">
+                <span class="menu-type">置于顶层</span>
+                <span class="badge extend">Ctrl+⬆</span>
+            </li>
+            <li class="list-group-item">
+                <span class="menu-type">置于底层</span>
+                <span class="badge extend">Ctrl+⬇</span>
+            </li>
+ -->
+            <li class="divider"></li>
+            <li class="list-group-item">
+                <span class="menu-type">全选</span>
+                <span class="badge extend">Ctrl+A</span>
+            </li>
+            <li class="divider"></li>
+            <li class="list-group-item">
+                <span class="menu-type">创建连线</span>
+                <span class="badge extend">Ctrl+L</span>
+            </li>
+        </ul>
+    </div>
+    <div id="line_context-menu">
+        <ul class="dropdown-menu context-menu list-group" role="menu">
+            <li class="list-group-item">
+                <span class="menu-type">编辑</span>
+                <span class="badge extend">双击</span>
+            </li>
+            <li class="list-group-item">
+                <span class="menu-type">删除</span>
+                <span class="badge extend">Delete/Backspace</span>
+            </li>
+            <li class="divider"></li>
+            <li class="list-group-item">
+                <span class="menu-type">全选</span>
+                <span class="badge extend">Ctrl+A</span>
+            </li>
+            <li class="divider"></li>
+            <li class="list-group-item">
+                <span class="menu-type">创建连线</span>
+                <span class="badge extend">Ctrl+L</span>
+            </li>
+        </ul>
+    </div>
+    <!-- require.js -->
+    <script src="lib/require.js"></script>
+    <script src="js/configuration.js"></script>
+    <script>
+    require(["FLOW"], function(FLOW) {
+        window.FLOW = new FLOW();
+        window.FLOW.initFLOW();
+    })
+    </script>
+</body>
+
+</html>

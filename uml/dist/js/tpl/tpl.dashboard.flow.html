@@ -1,0 +1,28 @@
+<div class="dashboard" tabindex="-1">
+    <div class="lattice lattice-4x">
+        <% if(!start) { %>
+        <div class="symbol lattice-grid" data-shape="start">
+            <img class="symbol ui-draggable ui-draggable-handle" src="img/flow-start.png">
+            <label class="label label-default">开始</label>
+        </div>
+        <% } %>
+        <% if(!end) { %>
+        <div class="symbol lattice-grid" data-shape="end">
+            <img class="symbol ui-draggable ui-draggable-handle" src="img/flow-end.png">
+            <label class="label label-default">结束</label>
+        </div>
+        <% } %>
+        <div class="symbol lattice-grid" data-shape="adjust">
+            <img class="symbol ui-draggable ui-draggable-handle" src="img/flow-adjust.png">
+            <label class="label label-default">流程</label>
+        </div>
+        <div class="symbol lattice-grid" data-shape="route">
+            <img class="symbol ui-draggable ui-draggable-handle" src="img/flow-route.png">
+            <label class="label label-default">路由</label>
+        </div>
+        <div class="symbol lattice-grid" data-shape="concurrence">
+            <img class="symbol ui-draggable ui-draggable-handle" src="img/flow-concurrence.png">
+            <label class="label label-default">并发</label>
+        </div>
+    </div>
+</div>
