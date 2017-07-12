@@ -4,3 +4,5 @@ Axis-flow,Axis-uml
 
 * r.js:是用于require.js中模块的打包工具
 * build.js:打包工具的配置文件
+
+这只是纯前端逻辑实现,不涉及接口对接.
