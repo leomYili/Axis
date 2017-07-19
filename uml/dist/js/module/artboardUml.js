@@ -25,6 +25,7 @@ define([
             layout: ".layout",
             artboard: ".artboard",
             artboardMenu: "#artboard_context-menu",
+            lineMenu: "#line_context-menu",
             attribute: ".symbol_item",
             box: ".symbol_box",
             symbolMenu: "#box_context-menu",
@@ -49,9 +50,7 @@ define([
         this.jsplumb = jsplumb.getInstance({
             Container: $(el).get(0),
             ConnectionOverlays: [
-                ["Arrow", { location: 1, id: "arrow", length: 10, foldback: 0, width: 10 }],
-                ["Label", { label: "n", id: "label-n", location: 0.25, cssClass: "jspl-label" }],
-                ["Label", { label: "1", id: "label-1", location: 0.75, cssClass: "jspl-label" }]
+                ["Arrow", { location: 1, id: "arrow", length: 10, foldback: 0, width: 10 }]
             ],
             PaintStyle: { stroke: "#00a65a" },
             groupDragStop: _.bind(this.groupDragStop, this)
@@ -127,6 +126,7 @@ define([
             this.pubSub.subscribe('update symbol', this.updateSymbol);
             this.pubSub.subscribe('update symbol in pos', this.updateSymbolInPos);
             this.pubSub.subscribe('update symbol in fk', this.updateSymbolInFk);
+            this.pubSub.subscribe('update symbol in see', this.updateSymbolInSee);
 
             this.pubSub.subscribe('delete symbol', this.deleteSymbol);
             this.pubSub.subscribe('delete line', this.deleteLine);
@@ -142,6 +142,7 @@ define([
 
             this.bindContextMenu(el);
             this.jsplumb.initEntity(sid);
+            return el;
             // this.endpointEntity();这里应该不需要了
         },
         /**
@@ -157,13 +158,40 @@ define([
             this.jsplumb.line.empty(el.get(0));
             el.append(tpl);
 
+            if (el.find(".g-show-more")) {
+                el.find('.symbol_shade').addClass('bottom25');
+            } else {
+                el.find('.symbol_shade').removeClass('bottom25');
+            }
             this.jsplumb.initPorperty(el.find(".symbol_item"));
 
-            var lines = _.flatten(_this.lines);
+            var index = _this.getIndex((_this.getSymbolToSign(sign)).id);
+            var lines = _.flatten(_this.lines[index]);
             $.each(lines, function(i, t) {
                 _this.connection({}, t);
             });
             this.entityModal.modal.modal('toggle');
+        },
+        renderSymbolSee: function(tpl, sign) {
+            var _this = this;
+
+            var el = $(".symbol_content[data-sign='" + sign + "']");
+            this.jsplumb.line.empty(el.get(0));
+            el.append(tpl);
+
+            if (el.find(".g-show-more")) {
+                el.find('.symbol_shade').addClass('bottom25');
+            } else {
+                el.find('.symbol_shade').removeClass('bottom25');
+            }
+
+            this.jsplumb.initPorperty(el.find(".symbol_item"));
+
+            var index = _this.getIndex((_this.getSymbolToSign(sign)).id);
+            var lines = _.flatten(_this.lines[index]);
+            $.each(lines, function(i, t) {
+                _this.connection({}, t);
+            });
         },
         renderTpl: function(tpl, data) {
             if (!_.isFunction(tpl)) tpl = _.template(tpl);
@@ -414,33 +442,45 @@ define([
                 _this.jsplumb.line.detach(connection);
                 _this.debug("自连");
 
-                _this.jsplumb.afreshUml(source, target);
+                _this.jsplumb.afreshUml(source, target,source.attr("data-fk"));
                 return false;
             }
 
-            if (_.isUndefined(fk)) {
-                // 说明这是一个新的外键,但需要判断是否是主键
-                if (source.hasClass("symbol_item-key")) {
-                    console.log("主键不能作为外键");
-                    _this.jsplumb.line.detach(connection);
-                } else {
-                    var key = sourceSymbol.arr.properties[source.index()].name;
-
-                    source.append(' <i class="fk">FK</i> <class>[' + targetSymbol.arr.name + ']</class>').addClass('symbol_item-fk').attr("data-fk", key);
-
-                    _this.update("add line to lines", { index: index, line: { source: sourceSymbol.sign, target: targetSymbol.sign, label: "从属于", key: key } })
-                    _this.vailKeyToSymbol(connection);
+            var type = connection.connection.getParameter("type")
+            if (!_.isUndefined(type)) {
+                if (type == "hide") {
+                    console.log("这条线是连接到tool上的连线");
+                } else if (type == "show") {
+                    console.log("这条线是连接到真实节点上的连线");
                 }
+
+                _this.bindLineContextMenu(connection);
             } else {
-                // 说明这是已存在的外键,但需要判断是否不属于终点
-                if (lines[_this.inArrayObj("key", fk, lines)].target === targetSymbol.sign) {
-                    if (source.find("class").length == 0) {
-                        source.append('<class>[' + targetSymbol.arr.name + ']</class>');
-                        _this.jsplumb.line.repaintEverything();
+                if (_.isUndefined(fk)) {
+                    // 说明这是一个新的外键,但需要判断是否是主键
+                    if (source.hasClass("symbol_item-key")) {
+                        console.log("主键不能作为外键");
+                        _this.jsplumb.line.detach(connection);
+                    } else {
+                        var key = sourceSymbol.arr.properties[source.index()].name;
+
+                        source.append(' <i class="fk">FK</i> <class>[' + targetSymbol.arr.name + ']</class>').addClass('symbol_item-fk').attr("data-fk", key);
+
+                        _this.update("add line to lines", { index: index, line: { source: sourceSymbol.sign, target: targetSymbol.sign, label: "从属于", key: key } })
+
+                        _this.vailKeyToSymbol(connection);
                     }
                 } else {
-                    console.log("不存在关系,该连线违法,需加上提示");
-                    _this.jsplumb.line.detach(connection);
+                    if (lines[_this.inArrayObj("key", fk, lines)].target === targetSymbol.sign) {
+                        if (source.find("class").length == 0) {
+                            source.append('<class>[' + targetSymbol.arr.name + ']</class>');
+                            _this.bindLineContextMenu(connection);
+                            _this.jsplumb.line.repaintEverything();
+                        }
+                    } else {
+                        console.log("不存在关系,该连线违法,需加上提示");
+                        _this.jsplumb.line.detach(connection);
+                    }
                 }
             }
         },
@@ -455,11 +495,13 @@ define([
             var source = $(conn.source),
                 target = $(conn.target);
 
-            if (!source.hasClass('symbol_item-key')) {
+            if (!target.hasClass('symbol_item-key')) {
                 _this.jsplumb.line.detach(conn);
-
                 var newTarget = target.parents('.symbol_content').children('.symbol_item-key');
-                _this.jsplumb.connectSelf(source.get(0), newTarget.get(0));
+                _this.jsplumb.connectSelf(source.get(0), newTarget.get(0),source.attr("data-fk"));
+            } else {
+                conn.connection.addOverlay(["Label", { label: source.attr("data-fk"), id: "displayName", location: 0.5, cssClass: "jspl-label" }]);
+                _this.bindLineContextMenu(conn);
             }
         },
         connection: function(data, line) {
@@ -471,13 +513,40 @@ define([
                 pk = target.find(".symbol_item-key").get(0);
 
             if (!_.isUndefined(line.key) && !_.isUndefined(fk) && !_.isUndefined(pk)) {
-                _this.jsplumb.connectSelf(fk, pk);
+                _this.jsplumb.connectSelf(fk, pk,line.key);
+            } else if (_.isUndefined(fk) && !_.isUndefined(pk) && source.find(".g-show-more").css("display") != "none") {
+                _this.connectionToTool(source, pk, line.key);
             } else {
                 _this.debug("有可能是附属类,需要进一步验证");
             }
         },
         /**
+         * 将隐藏的连线,重新连接到tool上
+         * @param  {[type]} source [description]
+         * @param  {[type]} target [description]
+         * @param  {[type]} conn   [description]
+         * @return {[type]}        [description]
+         */
+        connectionToTool: function(source, target, key) {
+            var _this = this;
+
+            var config = {
+                source: source.find('.g-show-more').get(0),
+                target: target,
+                parameters: {
+                    "type": 'hide',
+                    "source": key
+                },
+                overlays: [
+                    ["Label", { label: key, id: "displayName", location: 0.5, cssClass: "jspl-label" }]
+                ],
+            };
+
+            _this.jsplumb.connect(config);
+        },
+        /**
          * 新增一个symbol
+         * 增加初始化时,对于折叠层的判断
          * @param {[type]} obj [description]
          */
         addSymbol: function(obj) {
@@ -549,12 +618,18 @@ define([
             if (_.isNumber(sd)) {
                 this.debug("第" + sd + "行存在空白");
             } else {
-                var lines = _this.getLinesFormData({ id: sign, data: sd }),
-                    index = _this.getIndex(_this.getSymbolToSign(sign).id);
+                var lines = _this.getLinesFormData({ id: sign, properties: sd }),
+                    index = _this.getIndex((_this.getSymbolToSign(sign)).id);
                 _this.symbols[index].arr.properties = sd;
-                _this.symbols[index].lines = _this.lines[index] = lines;
+                //_this.symbols[index].lines = _this.lines[index] = lines;
 
-                _this.renderSymbolUpdate(_this.renderTpl(clsContent, { data: sd }), sign);
+                console.log(sd, _this.lines, _this.symbols);
+                var _data = {
+                    type: $(".symbol_content[data-sign='" + sign + "']").find('.g-show-more').css("display") == "none" ? "show" : 'hide',
+                    properties: sd
+                }
+
+                _this.renderSymbolUpdate(_this.renderTpl(clsContent, _data), sign);
             }
         },
         /**
@@ -580,6 +655,23 @@ define([
             this.symbols[data.index].position = pos;
         },
         /**
+         * 根据数据,直接渲染不同的内容
+         * @param  {[type]} data [description]
+         * @return {[type]}      [description]
+         */
+        updateSymbolInSee: function(data) {
+            var _this = this;
+
+            var symbol = this.getSymbolToSign(data.sign);
+
+            var _data = {
+                type: data.choose,
+                properties: symbol.arr.properties
+            }
+
+            _this.renderSymbolSee(_this.renderTpl(clsContent, _data), data.sign);
+        },
+        /**
          * 删除symbol,节点与数据都要更新
          * @param  {[type]} el [description]
          * @return {[type]}    [description]
@@ -599,9 +691,16 @@ define([
          * @return {[type]}      [description]
          */
         deleteLine: function(conn) {
+            var fk;
+            console.log(conn);
+            if (!_.isUndefined(conn.getParameter("type"))) {
+                fk = conn.getParameter("source");
+            } else {
+                fk = $(conn.source).attr("data-fk");
+            };
+
             var source = $(conn.source).closest(".symbol_content").attr("data-sign"),
                 target = $(conn.target).closest(".symbol_content").attr("data-sign"),
-                fk = $(conn.source).attr("data-fk"),
                 index = this.getIndex(this.getSymbolToSign(source).id),
                 index1 = -1,
                 index2 = -1,
@@ -618,8 +717,14 @@ define([
 
             var line = this.lines[index1].splice(index2, 1);
             this.symbols[index].arr.properties[index3].foreignkey = {};
-            $(conn.source).find("i,class").remove();
+
+            if (_.isUndefined(conn.getParameter("type"))) {
+                $(conn.source).removeClass('symbol_item-fk').removeAttr('data-fk').find("i,class").remove();
+            }
+
             this.jsplumb.line.detach(conn);
+            this.jsplumb.line.repaintEverything();
+            this.debug("delete", this.lines)
         },
         /**
          * 初始化symbol内部使用数据
@@ -687,6 +792,7 @@ define([
             this.bindClick();
             this.bindKeyDown();
             this.bindSave();
+            this.bindCollapse();
         },
         bindClick: function() {
             var _this = this;
@@ -704,7 +810,6 @@ define([
                 if (!$(this).hasClass("active")) {
                     $(".active-endpoint").removeClass('active-endpoint');
                     $(".symbol_box.active").removeClass('active');
-                    console.log(this);
                     /*_this.jsplumb.line.selectEndpoints({ element: this }).addClass("active-endpoint");*/
                     $(this).addClass("active");
                 }
@@ -827,6 +932,29 @@ define([
                 }
             });
         },
+        bindLineContextMenu: function(conn) {
+            var _this = this;
+
+            var arr = [];
+            arr.push($(conn.connection.canvas));
+            arr.push($(conn.connection.getOverlay("displayName").getElement()));
+
+            $.each(arr, function() {
+                this.contextmenu({
+                    target: _this.options.selector.lineMenu,
+                    before: function() {
+                        $(_this.options.selector.artboardMenu).removeClass('open');
+                    },
+                    onItem: function(context, e) {
+                        var type = $(e.currentTarget).find('.menu-type').text();
+                        _this.contextMenuType(type, conn.connection);
+                        this.closemenu();
+                    }
+                });
+            });
+
+            this.jsplumb.line.repaintEverything();
+        },
         /**
          * 根据选择的菜单属性,进行相应的操作
          */
@@ -897,6 +1025,47 @@ define([
             var index = this.getIndex(this.getId($(e.el)));
             this.debug("dragGroup");
             this.update("update symbol in pos", { index: index, pos: e.pos });
+            this.jsplumb.line.repaintEverything();
+        },
+        // 收起或者展开
+        // 隐藏有问题,尝试改成重新渲染节点试试
+        // 每次只操作一条连线,只有连线产生了,对其所做的删除还有重连才有意义
+        // 这里只发布事件,修改原有content内容,并重新连线
+        collapes: function(m, el) {
+            var _this = this;
+
+            var config = {
+                sign: el.attr("data-sign")
+            };
+            if (m) {
+                console.log("收缩所有属性,并重新连接");
+                config.choose = 'hide';
+            } else {
+                console.log("展开所有属性,并重新连接");
+                config.choose = 'show';
+            }
+
+            _this.update("update symbol in see", config)
+        },
+        // 绑定收起和展开按钮进行实体收缩
+        bindCollapse: function() {
+            var _this = this;
+
+            $(".uml").on("click", '.g-show-more', function() {
+                $(this).hide();
+                $(this).next().show();
+                _this.collapes(false, $(this).closest('.symbol_content'));
+
+                return false;
+            });
+
+            $(".uml").on("click", '.g-hide-more', function() {
+                $(this).hide();
+                $(this).prev().show();
+                _this.collapes(true, $(this).closest('.symbol_content'));
+
+                return false;
+            });
         }
     }
 

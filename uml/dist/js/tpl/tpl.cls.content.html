@@ -1,16 +1,53 @@
-<% for(var i = 0, len = data.length; i < len; i++) {%>
-        <% var item = data[i]; %>
+<% if(type == "show"){ %>
+    <% for(var i = 0, len = properties.length; i < len; i++) {%>
+        <% var item = properties[i]; %>
         <% if(item.primarykey == "true"){ %>
             <div class="symbol_item symbol_item-key">
-                + <%=item.name%> (<%=item.length%>) <img class="key" src="img/vpn_key.png">
+                + <%=item.name%> <%=item.type%>(<%=item.length%>) <img class="key" src="img/vpn_key.png">
             </div>
         <% } else if(typeof item.foreignkey.associateentity != "undefined") {%>
             <div class="symbol_item symbol_item-fk" data-fk="<%=item.name%>">
-                + <%=item.name%> (<%=item.length%>) <i class="fk">FK</i>
+                + <%=item.name%> <%=item.type%>(<%=item.length%>) <i class="fk">FK</i>
             </div>
         <% } else { %>
             <div class="symbol_item">
-                + <%=item.name%> (<%=item.length%>)
+                + <%=item.name%> <%=item.type%>(<%=item.length%>)
+            </div>
+        <% } %>
+        <% if(i == properties.length-1 && properties.length > 10) { %>
+            <div class="g-show-more" style="display: none;">
+                <img src='img/c-sl-more.png'>
+            </div>
+            <div class="g-hide-more" style="display: block;">
+                <img src="img/c-hide-more.png">
             </div>
         <% } %>
     <% } %>
+<% } else if(type == "hide"){ %>
+    <% for(var i = 0, len = properties.length; i < len; i++) {%>
+        <% var item = properties[i]; %>
+        <% if(i < 10){ %>
+            <% if(item.primarykey == "true"){ %>
+                <div class="symbol_item symbol_item-key">
+                    + <%=item.name%> <%=item.type%>(<%=item.length%>) <img class="key" src="img/vpn_key.png">
+                </div>
+            <% } else if(typeof item.foreignkey.associateentity != "undefined") {%>
+                <div class="symbol_item symbol_item-fk" data-fk="<%=item.name%>">
+                    + <%=item.name%> <%=item.type%>(<%=item.length%>) <i class="fk">FK</i>
+                </div>
+            <% } else { %>
+                <div class="symbol_item">
+                    + <%=item.name%> <%=item.type%>(<%=item.length%>)
+                </div>
+            <% } %>
+        <% } %>
+        <% if(i == properties.length-1 && properties.length > 10) { %>
+            <div class="g-show-more">
+                <img src='img/c-sl-more.png'>
+            </div>
+            <div class="g-hide-more">
+                <img src="img/c-hide-more.png">
+            </div>
+        <% } %>
+    <% } %>
+<% } %>

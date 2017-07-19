@@ -116,11 +116,16 @@ define(['throttle'], function(throttle) {
                 anchors: ["Top", "Right"]
             })
         },
-        afreshUml: function(source, target) {
-            console.log(source, target);
+        afreshUml: function(source, target, key) {
             this.line.connect({
                 source: source.get(0),
                 target: target.get(0),
+                parameters: {
+                    type: "self"
+                },
+                overlays: [
+                    ["Label", { label: key, id: "displayName", location: 0.5, cssClass: "jspl-label" }]
+                ],
                 connector: "Flowchart",
             });
         },
@@ -144,8 +149,8 @@ define(['throttle'], function(throttle) {
             this.line.connect({
                 source: source,
                 target: target,
-                parameters:{
-                    "line2":"dashboard"
+                parameters: {
+                    "line2": "dashboard"
                 }
             });
         },
@@ -155,7 +160,7 @@ define(['throttle'], function(throttle) {
          * @param  {[type]} target [description]
          * @return {[type]}        [description]
          */
-        connectSelf: function(source, target) {
+        connectSelf: function(source, target, key) {
             var _this = this;
 
             if (!source || !target) return;
@@ -166,12 +171,9 @@ define(['throttle'], function(throttle) {
                     target: target,
                     paintStyle: { stroke: "#00a65a" },
                     overlays: [
-                        ["Label", { label: "n", id: "label-n", location: 0.25, cssClass: "jspl-label" }],
-                        ["Label", { label: "1", id: "label-1", location: 0.75, cssClass: "jspl-label" }]
+                        ["Label", { label: key, id: "displayName", location: 0.5, cssClass: "jspl-label" }]
                     ]
                 });
-
-                _this.line.repaintEverything();
 
                 return connection;
             })

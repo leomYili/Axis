@@ -1217,19 +1217,68 @@ define([
         loadLine: function(data, next) {
             var _this = this;
 
-            for (var i = 0; i < data.lines.line.length; i++) {
-                var line = data.lines.line[i];
+            console.log(data.lines.line);
+            console.log(data.lines.line.length)
+            if (_.isUndefined(data.lines.line.length)) {
+                var line = data.lines.line;
                 var config = _this.getSite(line);
                 config.parameters = {
                     "line3": line
                 };
                 if (!_.isEmpty(config)) _this.jsplumb.connect(config);
+            } else {
+                console.log("11");
+                for (var i = 0; i < data.lines.line.length; i++) {
+                    var line = data.lines.line[i];
+                    var config = _this.getSite(line);
+                    config.parameters = {
+                        "line3": line
+                    };
+                    if (!_.isEmpty(config)) _this.jsplumb.connect(config);
+                }
             }
 
             next();
         },
         loadConfig: function(data) {
-            console.log(data, this.symbols, this.lines);
+            var _this = this;
+
+            console.log(data);
+            console.log(_.isUndefined(data.processconfig.properties));
+            if (!_.isUndefined(data.processconfig.properties)) {
+                if (_.isUndefined(data.processconfig.properties.property.length)) {
+                    var arr = data.processconfig.properties.property;
+                    var obj = _.values(arr);
+                    var arr1 = [];
+                    var arr2 = [];
+                    arr1.push(obj[0]);
+                    arr2.push(obj[1]);
+                    _this.config.push(_.object(arr1, arr2))
+                    if (arr.name == 'entity') {
+                        //_this.setEntity(arr.value);
+                    } else if (arr.name == 'form') {
+                        //_this.setForm(arr.value)
+                    }
+                } else {
+                    var arr = data.processconfig.properties.property;
+                    $.each(arr, function(i, t) {
+                        var obj = _.values(t);
+                        var arr1 = [];
+                        var arr2 = [];
+                        arr1.push(obj[0]);
+                        arr2.push(obj[1]);
+                        _this.config.push(_.object(arr1, arr2))
+                        if (t.name == 'entity') {
+                            //_this.setEntity(t.value);
+                        } else if (t.name == 'form') {
+                            //_this.setForm(t.value)
+                        }
+                    });
+                }
+            }
+
+            console.log(this.config, this.symbols, this.lines);
+
         },
         // create
         createSymbol: function(ui) {
@@ -1293,6 +1342,7 @@ define([
 
             $.extend(true, this.config, sd);
 
+            console.log(sd);
             _this.flowConfigModal.modal.modal('toggle');
         },
         updateFlow: function(el) {

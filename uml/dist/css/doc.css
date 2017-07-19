@@ -244,6 +244,10 @@
     cursor: move;
 }
 
+.uml .symbol_shade{
+    bottom:25px;
+}
+
 .symbol_flow .symbol_shade {
     top: 0;
     z-index:auto;
@@ -531,6 +535,45 @@
 .active-line path{
     fill: #61B7CF;
     stroke: #61B7CF;
+}
+
+.foreignkey.yes .associateentity,.foreignkey.yes .displayname{
+    display:none;
+}
+
+.g-show-more{
+    text-align: center;
+    background-color: #ccc;
+    line-height: 25px;
+    cursor: pointer;
+}
+
+.g-hide-more{
+    text-align: center;
+    background-color: #ccc;
+    display:none;
+}
+
+.g-hide{
+    display:none;
+}
+
+.g-hide-more img,.g-show-more img{
+    max-width: 40px;
+    height: auto;
+}
+
+.g-collapse.hide{
+    display:none;
+}
+
+.jspl-label {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 /* jquery ui */
