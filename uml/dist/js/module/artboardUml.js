@@ -18,6 +18,7 @@ define([
 
     var defaults = {
         debug: true,
+        
         className: {
             box: "symbol_box"
         },
